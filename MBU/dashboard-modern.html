@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFlow - Modern Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #ec4899;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #1e293b;
+      --dark-light: #334155;
+      --light: #f8fafc;
+      --light-gray: #e2e8f0;
+      --white: #ffffff;
+      --shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
+      --shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.15);
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(209, 213, 219, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: bgMove 20s linear infinite;
+    }
+
+    @keyframes bgMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* Navigation */
+    .navbar {
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .navbar-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .brand-logo i {
+      font-size: 1.5rem;
+      color: var(--white);
+    }
+
+    .brand-text h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--dark-light);
+      font-weight: 500;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .user-info h4 {
+      font-size: 0.9rem;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .user-info p {
+      font-size: 0.75rem;
+      color: var(--dark-light);
+    }
+
+    .logout-btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Welcome Card */
+    .welcome-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-card h2 {
+      font-size: 1.75rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .welcome-card p {
+      color: var(--dark-light);
+      font-size: 1rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 0.875rem 1.75rem;
+      background: var(--white);
+      border: 2px solid var(--light-gray);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--dark-light);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn i {
+      font-size: 1.1rem;
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary-light);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      border-color: var(--primary);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Content Sections */
+    .content-section {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Form Card */
+    .form-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .form-card h3 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .form-card h3 i {
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      border: 2px solid var(--light-gray);
+      border-radius: 12px;
+      background: var(--white);
+      color: var(--dark);
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .submit-btn {
+      padding: 0.875rem 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Card */
+    .card {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card h4 {
+      font-size: 1.25rem;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+
+    .card p {
+      color: var(--dark-light);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--light-gray);
+      align-items: center;
+    }
+
+    /* Badges */
+    .badge {
+      padding: 0.4rem 0.875rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .badge-primary {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary-dark);
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #059669;
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #d97706;
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #dc2626;
+    }
+
+    .badge-info {
+      background: rgba(59, 130, 246, 0.15);
+      color: #2563eb;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Message Alert */
+    .message {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    .message i {
+      font-size: 1.25rem;
+    }
+
+    .message.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      color: var(--dark-light);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--primary-light);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    .stat-card h4 {
+      font-size: 0.875rem;
+      color: var(--dark-light);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Table */
+    .table-container {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    th {
+      background: rgba(99, 102, 241, 0.1);
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      color: var(--dark-light);
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: modalSlideUp 0.3s ease-out;
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h3 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: var(--dark-light);
+      transition: all 0.3s;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .close-btn:hover {
+      background: var(--light-gray);
+      color: var(--dark);
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--white);
+    }
+
+    .spinner {
+      border: 4px solid var(--light-gray);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Grade Display */
+    .grade-display {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Feedback Box */
+    .feedback-box {
+      background: rgba(99, 102, 241, 0.1);
+      padding: 1.25rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .feedback-box h5 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .feedback-box p {
+      color: var(--dark-light);
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .navbar-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .user-section {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .user-badge {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .logout-btn {
+        width: 100%;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .tab-btn {
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="brand-text">
+          <h1>EduFlow</h1>
+          <p>Modern Learning Experience</p>
+        </div>
+      </div>
+      <div class="user-section">
+        <div class="user-badge">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-info">
+            <h4 id="userName"></h4>
+            <p id="userRole"></p>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+      <h2>Welcome, <span id="welcomeName"></span>! 👋</h2>
+      <p id="welcomeMessage"></p>
+    </div>
+
+    <!-- Message Area -->
+    <div id="messageArea"></div>
+
+    <!-- Teacher View -->
+    <div id="teacherView" style="display: none;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('mycourses')">
+          <i class="fas fa-book"></i> My Courses
+        </button>
+        <button class="tab-btn" onclick="switchTab('create')">
+          <i class="fas fa-plus-circle"></i> Create Course
+        </button>
+        <button class="tab-btn" onclick="switchTab('assignments')">
+          <i class="fas fa-tasks"></i> Assignments
+        </button>
+        <button class="tab-btn" onclick="switchTab('submissions')">
+          <i class="fas fa-inbox"></i> Submissions
+        </button>
+        <button class="tab-btn" onclick="switchTab('analytics')">
+          <i class="fas fa-chart-line"></i> Analytics
+        </button>
+      </div>
+
+      <!-- My Courses Tab -->
+      <div id="mycoursesTab" class="content-section active">
+        <div id="teacherCourses" class="grid"></div>
+      </div>
+
+      <!-- Create Course Tab -->
+      <div id="createTab" class="content-section">
+        <div class="form-card">
+          <h3><i class="fas fa-plus-circle"></i> Create New Course</h3>
+          <form id="createCourseForm">
+            <div class="form-group">
+              <label class="form-label">Course Title *</label>
+              <input type="text" class="form-input" id="courseTitle" required placeholder="e.g., Introduction to Web Development">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea class="form-textarea" id="courseDescription" required placeholder="Describe what students will learn..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration *</label>
+              <input type="text" class="form-input" id="courseDuration" required placeholder="e.g., 8 weeks, 40 hours">
+            </div>
+            <button type="submit" class="submit-btn">
+              <i class="fas fa-check"></i> Create Course
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Assignments Tab -->
+      <div id="assignmentsTab" class="content-section">
+        <div class="form-card">
+          <h3><i class="fas fa-file-alt"></i> Create New Assignment</h3>
+          <form id="createAssignmentForm">
+            <div class="form-group">
+              <label class="form-label">Select Course *</label>
+              <select class="form-select" id="assignmentCourse" required>
+                <option value="">Choose a course...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assignment Title *</label>
+              <input type="text" class="form-input" id="assignmentTitle" required placeholder="e.g., Build a Portfolio Website">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea class="form-textarea" id="assignmentDescription" required placeholder="Describe the assignment requirements..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Due Date *</label>
+              <input type="datetime-local" class="form-input" id="assignmentDueDate" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Maximum Points *</label>
+              <input type="number" class="form-input" id="assignmentMaxPoints" required value="100" min="1">
+            </div>
+            <button type="submit" class="submit-btn">
+              <i class="fas fa-check"></i> Create Assignment
+            </button>
+          </form>
+        </div>
+        <h3 style="color: white; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem;">
+          <i class="fas fa-list"></i> My Assignments
+        </h3>
+        <div id="teacherAssignments" class="grid"></div>
+      </div>
+
+      <!-- Submissions Tab -->
+      <div id="submissionsTab" class="content-section">
+        <div id="submissionsList"></div>
+      </div>
+
+      <!-- Analytics Tab -->
+      <div id="analyticsTab" class="content-section">
+        <div id="analyticsContent"></div>
+      </div>
+    </div>
+
+    <!-- Student View -->
+    <div id="studentView" style="display: none;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('available')">
+          <i class="fas fa-search"></i> Available Courses
+        </button>
+        <button class="tab-btn" onclick="switchTab('enrolled')">
+          <i class="fas fa-book-open"></i> My Courses
+        </button>
+        <button class="tab-btn" onclick="switchTab('myassignments')">
+          <i class="fas fa-clipboard-list"></i> My Assignments
+        </button>
+        <button class="tab-btn" onclick="switchTab('grades')">
+          <i class="fas fa-award"></i> My Grades
+        </button>
+      </div>
+
+      <!-- Available Courses Tab -->
+      <div id="availableTab" class="content-section active">
+        <div id="availableCourses" class="grid"></div>
+      </div>
+
+      <!-- Enrolled Courses Tab -->
+      <div id="enrolledTab" class="content-section">
+        <div id="enrolledCourses" class="grid"></div>
+      </div>
+
+      <!-- My Assignments Tab -->
+      <div id="myassignmentsTab" class="content-section">
+        <div id="studentAssignments" class="grid"></div>
+      </div>
+
+      <!-- My Grades Tab -->
+      <div id="gradesTab" class="content-section">
+        <div id="studentGrades"></div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+      <p>Loading your dashboard...</p>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="enrolledStudentsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-users"></i> Enrolled Students</h3>
+        <button class="close-btn" onclick="closeModal('enrolledStudentsModal')">&times;</button>
+      </div>
+      <div id="enrolledStudentsList"></div>
+    </div>
+  </div>
+
+  <div id="gradeSubmissionModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-edit"></i> Grade Submission</h3>
+        <button class="close-btn" onclick="closeModal('gradeSubmissionModal')">&times;</button>
+      </div>
+      <div id="gradeSubmissionContent"></div>
+    </div>
+  </div>
+
+  <div id="submitAssignmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-upload"></i> Submit Assignment</h3>
+        <button class="close-btn" onclick="closeModal('submitAssignmentModal')">&times;</button>
+      </div>
+      <div id="submitAssignmentContent"></div>
+    </div>
+  </div>
+
+  <script src="dashboard-modern-standalone.js"></script>
+</body>
+</html>
